@@ -1,43 +1,19 @@
-package com.touch.prueba_backend.Users.model;
+package com.touch.prueba_backend.Users.dto.request;
 
-import jakarta.persistence.*;
+public class UserRegisterRequest {
 
-@Entity
-@Table(name = "users")
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, unique = true, length = 50)
     private String username;
-
-    @Column(nullable = false, unique = true, length = 100)
     private String email;
-
-    @Column(nullable = false)
     private String password;
+    private String role; // ADMIN o EMPLOYEE
 
-    @Column(nullable = false, length = 20)
-    private String role;
+    public UserRegisterRequest() {}
 
-    public User() {}
-
-    public User(String username, String email, String password, String role) {
+    public UserRegisterRequest(String username, String email, String password, String role) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
-    }
-
-    // Getters y Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getUsername() {
@@ -71,4 +47,5 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
+
 }
