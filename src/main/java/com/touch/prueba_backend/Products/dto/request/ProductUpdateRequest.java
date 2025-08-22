@@ -1,32 +1,38 @@
-package com.touch.prueba_backend.Products.dto.response;
+package com.touch.prueba_backend.Products.dto.request;
+
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
-public class ProductResponse {
-    private Long id;
-    private String name;
-    private String description;
-    private BigDecimal price;
-    private Integer quantity;
-    private Long categoryId;
-    private String categoryName;
+public class ProductUpdateRequest {
 
-    public ProductResponse(Long id, String name, String description, BigDecimal price, Integer quantity, Long categoryId, String categoryName) {
-        this.id = id;
+    @NotBlank
+    @Size(max = 100)
+    private String name;
+
+    @Size(max = 255)
+    private String description;
+
+    @NotNull
+    @DecimalMin(value = "0.0", inclusive = true)
+    private BigDecimal price;
+
+    @NotNull
+    @Min(value = 0)
+    private Integer quantity;
+
+    @NotNull
+    private Long categoryId;
+
+    public ProductUpdateRequest() {}
+
+    public ProductUpdateRequest(String name, String description, BigDecimal price, Integer quantity, Long categoryId) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.quantity = quantity;
         this.categoryId = categoryId;
-        this.categoryName = categoryName;
     }
-
-    public ProductResponse(Long id, String name, BigDecimal price, Integer quantity, Long categoryId, String categoryName) {
-        this(id, name, null, price, quantity, categoryId, categoryName);
-    }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -43,6 +49,4 @@ public class ProductResponse {
     public Long getCategoryId() { return categoryId; }
     public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
 
-    public String getCategoryName() { return categoryName; }
-    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
 }

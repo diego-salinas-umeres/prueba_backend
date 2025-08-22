@@ -1,11 +1,16 @@
 package com.touch.prueba_backend.Products.controller;
 
 import com.touch.prueba_backend.Products.dto.request.ProductCreateRequest;
+import com.touch.prueba_backend.Products.dto.request.ProductUpdateRequest;
 import com.touch.prueba_backend.Products.dto.response.ProductPageResponse;
 import com.touch.prueba_backend.Products.dto.response.ProductResponse;
 import com.touch.prueba_backend.Products.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,5 +44,35 @@ public class ProductController {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/low-stock-report")
+    public ResponseEntity<byte[]> generateLowStockReport() {
+        byte[] pdfBytes = productService.generateLowStockReport();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("inline")
+                .filename("low_stock_report.pdf")
+                .build());
+
+        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductResponse> updateProduct(
+            @PathVariable Long id,
+            @Valid @RequestBody ProductUpdateRequest request
+    ) {
+        ProductResponse response = productService.updateProduct(id, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
+        ProductResponse response = productService.getProductById(id);
+        return ResponseEntity.ok(response);
+    }
+
+
 
 }
