@@ -1,6 +1,7 @@
 package com.touch.prueba_backend.Products.controller;
 
 import com.touch.prueba_backend.Products.dto.request.ProductCreateRequest;
+import com.touch.prueba_backend.Products.dto.request.ProductUpdateRequest;
 import com.touch.prueba_backend.Products.dto.response.ProductPageResponse;
 import com.touch.prueba_backend.Products.dto.response.ProductResponse;
 import com.touch.prueba_backend.Products.service.ProductService;
@@ -56,5 +57,22 @@ public class ProductController {
 
         return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductResponse> updateProduct(
+            @PathVariable Long id,
+            @Valid @RequestBody ProductUpdateRequest request
+    ) {
+        ProductResponse response = productService.updateProduct(id, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
+        ProductResponse response = productService.getProductById(id);
+        return ResponseEntity.ok(response);
+    }
+
+
 
 }

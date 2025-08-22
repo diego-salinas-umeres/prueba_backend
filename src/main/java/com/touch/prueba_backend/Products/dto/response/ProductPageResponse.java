@@ -15,7 +15,6 @@ public class ProductPageResponse {
         this.totalItems = totalItems;
     }
 
-    // Getters y setters
     public List<ProductResponse> getProducts() { return products; }
     public void setProducts(List<ProductResponse> products) { this.products = products; }
 
