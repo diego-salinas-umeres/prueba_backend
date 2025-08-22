@@ -1,5 +1,6 @@
 package com.touch.prueba_backend.Products.service;
 
+import com.itextpdf.text.pdf.*;
 import com.touch.prueba_backend.Categories.model.Category;
 import com.touch.prueba_backend.Categories.repository.CategoryRepository;
 import com.touch.prueba_backend.Products.dto.request.ProductCreateRequest;
@@ -12,7 +13,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
+
+import com.itextpdf.text.*;
 
 @Service
 public class ProductService {
@@ -79,6 +85,45 @@ public class ProductService {
             throw new RuntimeException("Producto no encontrado");
         }
         productRepository.deleteById(id);
+    }
+
+    public byte[] generateLowStockReport() {
+        List<Product> lowStockProducts = productRepository.findByQuantityLessThan(5);
+
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Document document = new Document();
+            PdfWriter.getInstance(document, out);
+            document.open();
+
+            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+            Paragraph title = new Paragraph("Reporte de Productos con Bajo Inventario", titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+            document.add(new Paragraph("\n"));
+
+            PdfPTable table = new PdfPTable(4); // columnas: nombre, descripción, precio, cantidad
+            table.setWidthPercentage(100);
+            table.addCell("Nombre");
+            table.addCell("Descripción");
+            table.addCell("Precio");
+            table.addCell("Cantidad");
+
+            for (Product p : lowStockProducts) {
+                table.addCell(p.getName());
+                table.addCell(p.getDescription() != null ? p.getDescription() : "");
+                table.addCell(p.getPrice().toString());
+                table.addCell(p.getQuantity().toString());
+            }
+
+            document.add(table);
+            document.close();
+
+            return out.toByteArray();
+        } catch (DocumentException e) {
+            throw new RuntimeException("Error generando el PDF", e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
